@@ -1,0 +1,13 @@
+# Logs
+*.log
+
+# dotenv environment variables file
+.env
+
+# zenaton files
+zenaton.out
+zenaton.log
+zenaton.err
+
+# go binary
+zenaton-go
