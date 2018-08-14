@@ -16,7 +16,7 @@ var EventWorkflow = zenaton.NewWorkflow(zenaton.WorkflowParams{
 			task.C.Execute()
 		}
 	},
-	ID: func() string {
+	ID: func(interface{}) string {
 		return "MyId"
 	},
 })

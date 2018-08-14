@@ -1,8 +1,9 @@
 package client
 
 import (
-	"github.com/zenaton/zenaton-go/v1/zenaton"
 	"os"
+
+	"github.com/zenaton/zenaton-go/v1/zenaton"
 )
 
 func init() {
