@@ -6,6 +6,5 @@ import (
 )
 
 func main() {
-
 	workflow.WaitWorkflow.Dispatch()
 }

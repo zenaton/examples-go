@@ -10,8 +10,8 @@ import (
 var C = zenaton.NewTask(zenaton.TaskParams{
 	Name: "TaskC",
 	HandleFunc: func() (string, error) {
+		time.Sleep(2 * time.Second)
 		fmt.Println("Task C")
-		time.Sleep(7 * time.Second)
 		return "Task C", nil
 	},
 })
