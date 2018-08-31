@@ -4,14 +4,16 @@ import (
 	"time"
 
 	_ "github.com/zenaton/examples-go/client" // initialize zenaton client with credentials
-	"github.com/zenaton/examples-go/workflow"
+	"github.com/zenaton/examples-go/workflows"
+	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
 func main() {
 
-	workflow.EventWorkflow.Dispatch()
+	EventWorkflow := workflow.New(&workflows.Event{})
+	EventWorkflow.Dispatch2()
 
 	time.Sleep(2 * time.Second)
 
-	workflow.EventWorkflow.WhereID("MyId").Send("MyEvent", nil)
+	EventWorkflow.WhereID("MyId").Send("MyEvent", nil)
 }

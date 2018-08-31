@@ -25,14 +25,14 @@ type entry struct {
 }
 
 var table = []entry{
-	//{
-	//	directory: "event",
-	//	context:   "with an event based workflow",
-	//	it:        "should handle events",
-	//	output:    "Task B\nTask A\n",
-	//	err:       "",
-	//	sleep:     8,
-	//},
+	{
+		directory: "event",
+		context:   "with an event based workflow",
+		it:        "should handle events",
+		output:    "Task A\nTask C\nTask B\n",
+		err:       "",
+		sleep:     10,
+	},
 	{
 		directory: "asynchronous",
 		context:   "with an asychronous workflow",
@@ -107,11 +107,11 @@ var _ = Describe("Integration", func() {
 				}
 				Expect(err).ToNot(HaveOccurred())
 
-				errFile, err := os.OpenFile("zenaton.err", os.O_RDWR, 0660)
+				errFile, err := os.OpenFile("../zenaton.err", os.O_RDWR, 0660)
 				switch err.(type) {
 				case *os.PathError:
 					//this is ok
-					errFile, err = os.Create("zenaton.err")
+					errFile, err = os.Create("../zenaton.err")
 					Expect(err).ToNot(HaveOccurred())
 
 				default:
@@ -125,11 +125,11 @@ var _ = Describe("Integration", func() {
 				}
 				defer errFile.Close()
 
-				outFile, err := os.OpenFile("zenaton.out", os.O_RDWR, 0660)
+				outFile, err := os.OpenFile("../zenaton.out", os.O_RDWR, 0660)
 				switch err.(type) {
 				case *os.PathError:
 					//this is ok
-					outFile, err = os.Create("zenaton.out")
+					outFile, err = os.Create("../zenaton.out")
 					Expect(err).ToNot(HaveOccurred())
 				default:
 					Expect(err).ToNot(HaveOccurred())

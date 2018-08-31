@@ -2,11 +2,12 @@ package main
 
 import (
 	// initialize zenaton client with credentials
+
 	_ "github.com/zenaton/examples-go/client"
-	"github.com/zenaton/examples-go/idmax"
-	"github.com/zenaton/examples-go/workflow"
+	"github.com/zenaton/examples-go/workflows"
+	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
 func main() {
-	workflow.RecursiveWorkflow.SetData(idmax.IDmax{0, 2}).Dispatch()
+	workflow.New(&workflows.Recursive{0, 2}).Dispatch2()
 }
