@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	workflows.VersionWorkflow.Dispatch2()
+	workflows.VersionWorkflow.Dispatch()
 }

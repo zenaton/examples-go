@@ -6,16 +6,12 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-func init() {
-	//todo: call this registerworkflow, and check in newWorkflow that this is registered first
-	workflow.New(&Wait{})
-	task.Wait() //todo: god this is ugly
-}
+var WaitWorkflow = workflow.New2(&Wait{})
 
 type Wait struct{}
 
 func (w *Wait) Handle() {
-	task.New(&tasks.A{}).Execute()
+	tasks.TaskA().Execute()
 	task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
-	task.New(&tasks.D{}).Execute()
+	tasks.TaskD().Execute()
 }

@@ -15,18 +15,16 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-func init() {
-	//todo: call this registerworkflow, and check in newWorkflow that this is registered first
-	workflow.New(&Parallel{})
-}
+var ParallelWorkflow = workflow.New2(&Parallel{})
 
 type Parallel struct{}
 
 func (s Parallel) Handle() {
+
 	//tasks A and B run in parallel
 	_, err := task.Parallel{
-		task.New(&tasks.A{}),
-		task.New(&tasks.B{}),
+		tasks.TaskA(),
+		tasks.TaskB(),
 	}.Execute()
 
 	//todo: should I have errors?
@@ -34,5 +32,5 @@ func (s Parallel) Handle() {
 		panic(err)
 	}
 
-	task.New(&tasks.C{}).Execute()
+	tasks.TaskC().Execute()
 }

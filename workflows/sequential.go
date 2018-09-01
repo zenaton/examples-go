@@ -2,19 +2,14 @@ package workflows
 
 import (
 	"github.com/zenaton/examples-go/tasks"
-	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-func init() {
-	workflow.New(&Sequential{})
-}
+var SequentialWorkflow = workflow.New2(&Sequential{})
 
-type Sequential struct {
-	Field string
-}
+type Sequential struct{}
 
 func (s Sequential) Handle() {
-	task.New(&tasks.A{}).Execute()
-	task.New(&tasks.B{}).Execute()
+	tasks.TaskA().Execute()
+	tasks.TaskB().Execute()
 }

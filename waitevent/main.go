@@ -1,15 +1,15 @@
 package main
 
 import (
+	"time"
+
 	_ "github.com/zenaton/examples-go/client" // initialize zenaton client with credentials
 	"github.com/zenaton/examples-go/workflows"
-	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
-	"time"
 )
 
 func main() {
-	WaitEventWorkflow := workflow.New(&workflows.WaitEvent{})
-	WaitEventWorkflow.Dispatch2()
+	WaitEventWorkflow := workflows.WaitEventWorkflow()
+	WaitEventWorkflow.Dispatch()
 
 	time.Sleep(2 * time.Second)
 

@@ -18,8 +18,8 @@ type v0 struct{}
 
 func (v v0) Handle() {
 	task.Parallel{
-		task.New(&tasks.A{}),
-		task.New(&tasks.B{}),
+		tasks.TaskA(),
+		tasks.TaskB(),
 	}.Execute()
 }
 
@@ -27,9 +27,9 @@ type v1 struct{}
 
 func (v v1) Handle() {
 	task.Parallel{
-		task.New(&tasks.A{}),
-		task.New(&tasks.B{}),
-		task.New(&tasks.C{}),
+		tasks.TaskA(),
+		tasks.TaskB(),
+		tasks.TaskC(),
 	}.Execute()
 }
 
@@ -37,9 +37,9 @@ type v2 struct{}
 
 func (v v2) Handle() {
 	task.Parallel{
-		task.New(&tasks.A{}),
-		task.New(&tasks.B{}),
-		task.New(&tasks.C{}),
-		task.New(&tasks.D{}),
+		tasks.TaskA(),
+		tasks.TaskB(),
+		tasks.TaskC(),
+		tasks.TaskD(),
 	}.Execute()
 }

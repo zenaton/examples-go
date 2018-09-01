@@ -7,12 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-func init() {
-	//todo: call this registerworkflow, and check in newWorkflow that this is registered first
-	workflow.New(&Recursive{})
-	task.New(&DisplayTask{})
-	task.New(&RelaunchTask{})
-}
+var RecursiveWorkflow = workflow.New2(&Recursive{})
 
 type Recursive struct {
 	ID  int
@@ -21,25 +16,29 @@ type Recursive struct {
 
 func (r Recursive) Handle() {
 	for counter := 0; counter < 1; counter++ {
-		task.New(&DisplayTask{ID: counter}).Execute()
+		DisplayTask(&Display{ID: counter}).Execute()
 	}
 
-	task.New(&RelaunchTask{R: r}).Execute()
+	RelaunchTask(&Relaunch{R: r}).Execute()
 }
 
-type DisplayTask struct {
+var DisplayTask = task.New2(&Display{})
+
+type Display struct {
 	ID int
 }
 
-func (dt *DisplayTask) Handle() {
+func (dt *Display) Handle() {
 	fmt.Print(dt.ID)
 }
 
-type RelaunchTask struct {
+var RelaunchTask = task.New2(&Relaunch{})
+
+type Relaunch struct {
 	R Recursive
 }
 
-func (rt *RelaunchTask) Handle() {
+func (rt *Relaunch) Handle() {
 	if rt.R.ID >= rt.R.Max {
 		return
 	}
@@ -47,5 +46,5 @@ func (rt *RelaunchTask) Handle() {
 	newID := 1 + rt.R.ID
 	fmt.Printf("\nIteration: %v\n", newID)
 
-	workflow.New(&Recursive{newID, rt.R.Max}).Dispatch2()
+	workflow.New(&Recursive{newID, rt.R.Max}).Dispatch()
 }

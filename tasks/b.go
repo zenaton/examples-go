@@ -7,10 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 )
 
-func init() {
-	//todo: call this registerTask
-	task.New(&B{})
-}
+var TaskB = task.New2(&B{})
 
 type B struct{}
 
