@@ -8,5 +8,5 @@ import (
 )
 
 func main() {
-	workflows.RecursiveWorkflow(workflows.Recursive{0, 2}).Dispatch()
+	workflows.RecursiveWorkflow.NewInstance(workflows.Recursive{0, 2}).Dispatch()
 }

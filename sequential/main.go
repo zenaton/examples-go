@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	workflows.SequentialWorkflow().Dispatch()
+	workflows.SequentialWorkflow.NewInstance().Dispatch()
 }

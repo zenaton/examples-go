@@ -8,10 +8,10 @@ import (
 )
 
 func main() {
-	WaitEventWorkflow := workflows.WaitEventWorkflow()
-	WaitEventWorkflow.Dispatch()
+	workflows.WaitEventWorkflow.WhereID("MyId").Kill()
+	workflows.WaitEventWorkflow.NewInstance().Dispatch()
 
 	time.Sleep(2 * time.Second)
 
-	WaitEventWorkflow.WhereID("MyId").Send("MyEvent", nil)
+	workflows.WaitEventWorkflow.WhereID("MyId").Send("MyEvent", nil)
 }

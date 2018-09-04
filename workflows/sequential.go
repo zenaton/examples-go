@@ -5,11 +5,12 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var SequentialWorkflow = workflow.New2(&Sequential{})
+var SequentialWorkflow = workflow.New(&Sequential{})
 
 type Sequential struct{}
 
-func (s Sequential) Handle() {
-	tasks.TaskA().Execute()
-	tasks.TaskB().Execute()
+func (s Sequential) Handle() (interface{}, error) {
+	tasks.TaskA.NewInstance().Execute()
+	tasks.TaskB.NewInstance().Execute()
+	return nil, nil
 }

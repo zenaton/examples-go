@@ -6,40 +6,47 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-//todo: I don't really understand what's happening here. Should figure it out so that I can document it.
-//todo: this isn't right. Shouldn't have an instance of the version thing
-var VersionWorkflow = workflow.NewVersion2("VersionWorkflow", []*workflow.Workflow{
-	workflow.New(&v0{}),
-	workflow.New(&v1{}),
-	workflow.New(&v2{}),
+var VersionWorkflow = workflow.Version("VersionWorkflow", []*workflow.WorkflowType{
+	V0Workflow,
+	V1Workflow,
+	V2Workflow,
 })
 
-type v0 struct{}
+var V0Workflow = workflow.New(&V0{})
 
-func (v v0) Handle() {
+type V0 struct{}
+
+func (v V0) Handle() (interface{}, error) {
 	task.Parallel{
-		tasks.TaskA(),
-		tasks.TaskB(),
+		tasks.TaskA.NewInstance(),
+		tasks.TaskB.NewInstance(),
 	}.Execute()
+	return nil, nil
 }
 
-type v1 struct{}
+var V1Workflow = workflow.New(&V1{})
 
-func (v v1) Handle() {
+type V1 struct{}
+
+func (v V1) Handle() (interface{}, error) {
 	task.Parallel{
-		tasks.TaskA(),
-		tasks.TaskB(),
-		tasks.TaskC(),
+		tasks.TaskA.NewInstance(),
+		tasks.TaskB.NewInstance(),
+		tasks.TaskC.NewInstance(),
 	}.Execute()
+	return nil, nil
 }
 
-type v2 struct{}
+var V2Workflow = workflow.New(&V2{})
 
-func (v v2) Handle() {
+type V2 struct{}
+
+func (v V2) Handle() (interface{}, error) {
 	task.Parallel{
-		tasks.TaskA(),
-		tasks.TaskB(),
-		tasks.TaskC(),
-		tasks.TaskD(),
+		tasks.TaskA.NewInstance(),
+		tasks.TaskB.NewInstance(),
+		tasks.TaskC.NewInstance(),
+		tasks.TaskD.NewInstance(),
 	}.Execute()
+	return nil, nil
 }

@@ -5,18 +5,19 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var EventWorkflow = workflow.New2(&Event{})
+var EventWorkflow = workflow.New(&Event{})
 
 type Event struct{}
 
-func (w *Event) Handle() {
-	tasks.TaskA().Execute()
-	tasks.TaskB().Execute()
+func (w *Event) Handle() (interface{}, error) {
+	tasks.TaskA.NewInstance().Execute()
+	tasks.TaskB.NewInstance().Execute()
+	return nil, nil
 }
 
 func (w *Event) OnEvent(eventName string, eventData interface{}) {
 	if eventName == "MyEvent" {
-		tasks.TaskC().Execute()
+		tasks.TaskC.NewInstance().Execute()
 	}
 }
 

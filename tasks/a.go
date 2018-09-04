@@ -7,11 +7,14 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 )
 
-var TaskA = task.New2(&A{})
+var TaskA = task.New(&A{})
 
-type A struct{}
+type A struct {
+	Field string
+}
 
-func (a *A) Handle() {
+func (a *A) Handle() (interface{}, error) {
 	time.Sleep(4 * time.Second)
 	fmt.Println("Task A")
+	return nil, nil
 }

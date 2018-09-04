@@ -9,10 +9,9 @@ import (
 
 func main() {
 
-	EventWorkflow := workflows.EventWorkflow()
-	EventWorkflow.Dispatch()
+	workflows.EventWorkflow.NewInstance().Dispatch()
 
 	time.Sleep(2 * time.Second)
 
-	EventWorkflow.WhereID("MyId").Send("MyEvent", nil)
+	workflows.EventWorkflow.WhereID("MyId").Send("MyEvent", nil)
 }

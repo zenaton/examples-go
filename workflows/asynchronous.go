@@ -5,11 +5,12 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var AsynchronousWorkflow = workflow.New2(&Asynchronous{})
+var AsynchronousWorkflow = workflow.New(&Asynchronous{})
 
 type Asynchronous struct{}
 
-func (a Asynchronous) Handle() {
-	tasks.TaskA().Dispatch()
-	tasks.TaskB().Dispatch()
+func (a Asynchronous) Handle() (interface{}, error) {
+	tasks.TaskA.NewInstance().Dispatch()
+	tasks.TaskB.NewInstance().Dispatch()
+	return nil, nil
 }

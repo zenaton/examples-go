@@ -29,9 +29,9 @@ var table = []entry{
 		directory: "event",
 		context:   "with an event based workflow",
 		it:        "should handle events",
-		output:    "Task A\nTask C\nTask B\n",
+		output:    "Task C\nTask A\nTask B\n",
 		err:       "",
-		sleep:     10,
+		sleep:     8,
 	},
 	{
 		directory: "asynchronous",
@@ -39,7 +39,7 @@ var table = []entry{
 		it:        "should perform tasks asynchronously",
 		output:    "Task B\nTask A\n",
 		err:       "",
-		sleep:     10,
+		sleep:     7,
 	},
 	{
 		directory: "parallel",
@@ -47,7 +47,7 @@ var table = []entry{
 		it:        "should handle tasks in parallel",
 		output:    "Task B\nTask A\nTask C\n",
 		err:       "",
-		sleep:     13,
+		sleep:     9,
 	},
 	{
 		directory: "recursive",
@@ -55,7 +55,7 @@ var table = []entry{
 		it:        "should handle tasks recursively",
 		output:    "0\nIteration: 1\n0\nIteration: 2\n0",
 		err:       "",
-		sleep:     15,
+		sleep:     8,
 	},
 	{
 		directory: "sequential",
@@ -63,7 +63,7 @@ var table = []entry{
 		it:        "should handle tasks sequentially",
 		output:    "Task A\nTask B\n",
 		err:       "",
-		sleep:     13,
+		sleep:     10,
 	},
 	{
 		directory: "version",
@@ -71,7 +71,7 @@ var table = []entry{
 		it:        "should handle versioned workflows",
 		output:    "Task D\nTask C\nTask B\nTask A\n",
 		err:       "",
-		sleep:     10,
+		sleep:     8,
 	},
 	{
 		directory: "wait",
@@ -79,7 +79,15 @@ var table = []entry{
 		it:        "should wait before a task",
 		output:    "Task A\nTask D\n",
 		err:       "",
-		sleep:     13,
+		sleep:     12,
+	},
+	{
+		directory: "waitevent",
+		context:   "with a waitevent workflow",
+		it:        "should wait for either an event or a given time",
+		output:    "Task B\n",
+		err:       "",
+		sleep:     6,
 	},
 }
 

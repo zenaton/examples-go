@@ -6,5 +6,5 @@ import (
 )
 
 func main() {
-	workflows.VersionWorkflow.Dispatch()
+	workflows.VersionWorkflow.NewInstance().Dispatch()
 }

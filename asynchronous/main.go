@@ -6,5 +6,5 @@ import (
 ) // initialize client with credentials
 
 func main() {
-	workflows.AsynchronousWorkflow().Dispatch()
+	workflows.AsynchronousWorkflow.NewInstance().Dispatch()
 }
