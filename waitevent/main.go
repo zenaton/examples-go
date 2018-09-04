@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-	workflows.WaitEventWorkflow.WhereID("MyId").Kill()
 	workflows.WaitEventWorkflow.NewInstance().Dispatch()
 
 	time.Sleep(2 * time.Second)
