@@ -1,17 +1,14 @@
 package main
 
 import (
-	"time"
-
 	_ "github.com/zenaton/examples-go/client" // initialize zenaton client with credentials
 	"github.com/zenaton/examples-go/workflows"
 )
 
 func main() {
 
-	workflows.WaitEventWorkflow.NewInstance().Dispatch()
-
-	time.Sleep(2 * time.Second)
-
-	workflows.WaitEventWorkflow.WhereID("MyId").Send("MyEvent", "some data")
+	workflows.TestW.WhereID("MyID").Kill()
+	workflows.TestW.NewInstance(workflows.Test2{
+		TaskError: "testTaskError",
+	}).Dispatch()
 }

@@ -5,7 +5,11 @@ import (
 	"github.com/zenaton/examples-go/workflows"
 )
 
-func init() { client.SetEnv("sequential.env") }
+func init() { client.SetEnv("testReturnError.env") }
 func main() {
-	workflows.SequentialWorkflow.NewInstance().Dispatch()
+
+	workflows.TestW.WhereID("MyID").Kill()
+	workflows.TestW.NewInstance(workflows.Test2{
+		TaskError: "testTaskError",
+	}).Dispatch()
 }

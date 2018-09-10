@@ -12,7 +12,7 @@ var VersionWorkflow = workflow.Version("VersionWorkflow", []*workflow.WorkflowTy
 	V2Workflow,
 })
 
-var V0Workflow = workflow.New(&V0{})
+var V0Workflow = workflow.New("V0", &V0{})
 
 type V0 struct{}
 
@@ -24,7 +24,7 @@ func (v V0) Handle() (interface{}, error) {
 	return nil, nil
 }
 
-var V1Workflow = workflow.New(&V1{})
+var V1Workflow = workflow.New("V1", &V1{})
 
 type V1 struct{}
 
@@ -37,7 +37,7 @@ func (v V1) Handle() (interface{}, error) {
 	return nil, nil
 }
 
-var V2Workflow = workflow.New(&V2{})
+var V2Workflow = workflow.New("V2", &V2{})
 
 type V2 struct{}
 

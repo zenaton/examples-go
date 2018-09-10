@@ -7,7 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 )
 
-var TaskB = task.New(&B{})
+var TaskB = task.New("TaskB", &B{})
 
 type B struct{}
 

@@ -7,7 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var RecursiveWorkflow = workflow.New(&Recursive{})
+var RecursiveWorkflow = workflow.New("RecursiveWorkflow", &Recursive{})
 
 type Recursive struct {
 	ID  int
@@ -15,7 +15,7 @@ type Recursive struct {
 }
 
 func (r Recursive) Handle() (interface{}, error) {
-	for counter := 0; counter < 1; counter++ {
+	for counter := 0; counter < 2; counter++ {
 		DisplayTask.NewInstance(&Display{ID: counter}).Execute()
 	}
 
@@ -23,7 +23,7 @@ func (r Recursive) Handle() (interface{}, error) {
 	return nil, nil
 }
 
-var DisplayTask = task.New(&Display{})
+var DisplayTask = task.New("DisplayTask", &Display{})
 
 type Display struct {
 	ID int
@@ -34,7 +34,7 @@ func (dt *Display) Handle() (interface{}, error) {
 	return nil, nil
 }
 
-var RelaunchTask = task.New(&Relaunch{})
+var RelaunchTask = task.New("RelaunchTask", &Relaunch{})
 
 type Relaunch struct {
 	R Recursive

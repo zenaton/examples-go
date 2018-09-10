@@ -5,7 +5,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var SequentialWorkflow = workflow.New(&Sequential{})
+var SequentialWorkflow = workflow.New("SequentialWorkflow", &Sequential{})
 
 type Sequential struct{}
 

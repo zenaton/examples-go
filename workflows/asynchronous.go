@@ -5,7 +5,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var AsynchronousWorkflow = workflow.New(&Asynchronous{})
+var AsynchronousWorkflow = workflow.New("AsynchronousWorkflow", &Asynchronous{})
 
 type Asynchronous struct{}
 

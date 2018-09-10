@@ -6,14 +6,14 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var ParallelWorkflow = workflow.New(&Parallel{})
+var ParallelWorkflow = workflow.New("ParallelWorkflow", &Parallel{})
 
 type Parallel struct{}
 
 func (s Parallel) Handle() (interface{}, error) {
 
 	//tasks A and B run in parallel
-	_, err := task.Parallel{
+	err := task.Parallel{
 		tasks.TaskA.NewInstance(),
 		tasks.TaskB.NewInstance(),
 	}.Execute()

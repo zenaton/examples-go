@@ -7,7 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 )
 
-var TaskA = task.New(&A{})
+var TaskA = task.New("TaskA", &A{})
 
 type A struct {
 	Field string

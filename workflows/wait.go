@@ -6,7 +6,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var WaitWorkflow = workflow.New(&Wait{})
+var WaitWorkflow = workflow.New("WaitWorkflow", &Wait{})
 
 type Wait struct{}
 

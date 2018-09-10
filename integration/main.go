@@ -50,10 +50,6 @@ func ChangeClient(fileName string, envFile string) error {
 	return ioutil.WriteFile(fileName, contents, 0660)
 }
 
-func CDIntoDir(dir string) error {
-	return os.Chdir(dir)
-}
-
 func AddEnv(specificEnv string) (bool, error) {
 	_, err := os.OpenFile("./client/"+specificEnv, os.O_RDWR, 0660)
 	switch err.(type) {
@@ -86,7 +82,7 @@ func AddBoot(specificBoot string, envFileName string) error {
 	default:
 	}
 
-	contents, err := ioutil.ReadFile("./boot/"+specificBoot+"/"+specificBoot)
+	contents, err := ioutil.ReadFile("./boot/" + specificBoot + "/" + specificBoot)
 	contents = bytes.Replace(contents, []byte(`client.SetEnv("")`), []byte(`client.SetEnv("`+envFileName+`")`), -1)
 	return ioutil.WriteFile("./boot/"+specificBoot+"/"+specificBoot, contents, 0660)
 }
@@ -103,11 +99,10 @@ func WriteAppEnv(file, env string) error {
 
 func Listen(specificEnv string, bootFile string, executionDir string) error {
 
-	args := []string{"listen", "--env=../client/" + specificEnv, "--boot=../boot/"+bootFile+"/"+bootFile}
+	args := []string{"listen", "--env=../client/" + specificEnv, "--boot=../boot/" + bootFile + "/" + bootFile}
 
 	cmd := exec.Command("zenaton", args...)
 	cmd.Dir = executionDir
-
 
 	out, err := cmd.CombinedOutput()
 	fmt.Println("out1: ", string(out))

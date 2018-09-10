@@ -7,7 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 )
 
-var TaskD = task.New(&D{})
+var TaskD = task.New("TaskD", &D{})
 
 type D struct{}
 

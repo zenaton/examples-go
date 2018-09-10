@@ -6,14 +6,18 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var WaitEventWorkflow = workflow.New(&WaitEvent{})
+var WaitEventWorkflow = workflow.New("WaitEventWorkflow", &WaitEvent{})
 
 type WaitEvent struct{}
 
 func (w *WaitEvent) Handle() (interface{}, error) {
-	event, _ := task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
+	event, err := task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
 
-	if event == nil {
+	if err != nil {
+		panic(err)
+	}
+
+	if event.Arrived() {
 		tasks.TaskA.NewInstance().Execute()
 	} else {
 		tasks.TaskB.NewInstance().Execute()
