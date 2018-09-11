@@ -13,5 +13,7 @@ func main() {
 
 	time.Sleep(2 * time.Second)
 
+	workflows.SequentialWorkflow.WhereID("MyId").Find()
+
 	workflows.EventWorkflow.WhereID("MyId").Send("MyEvent", nil)
 }

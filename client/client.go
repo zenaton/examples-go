@@ -15,6 +15,7 @@ func init() {
 
 func SetEnv() {
 
+	//todo: should I make this easier? not use a .env?
 	_, thisFilePath, _, ok := runtime.Caller(0)
 	if !ok {
 		panic(thisFilePath)
@@ -22,6 +23,12 @@ func SetEnv() {
 
 	thisFilePath = strings.Replace(thisFilePath, "/client.go", "/.env", -1)
 	variables, err := godotenv.Read(thisFilePath)
+	if err != nil {
+		fmt.Println("error: ", err)
+		panic("Error loading .env file")
+	}
+
+	err = godotenv.Load(thisFilePath)
 	if err != nil {
 		fmt.Println("error: ", err)
 		panic("Error loading .env file")
@@ -40,7 +47,7 @@ func SetEnv() {
 
 	appEnv, ok := variables["ZENATON_APP_ENV"]
 	if !ok {
-		panic("Please add ZENATON_APP_ENV env variable(https://zenaton.com/app/api)")
+		panic("Please add ZENATON_APP_ENV env variable (https://zenaton.com/app/api)")
 	}
 
 	zenaton.InitClient(appID, apiToken, appEnv)

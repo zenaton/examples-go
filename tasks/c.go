@@ -7,12 +7,9 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 )
 
-var TaskC = task.New("TaskC", &C{})
-
-type C struct{}
-
-func (a *C) Handle() (interface{}, error) {
-	time.Sleep(2 * time.Second)
-	fmt.Println("Task C")
-	return nil, nil
-}
+var TaskC = task.NewDefault("TaskC",
+	func() (interface{}, error) {
+		time.Sleep(2 * time.Second)
+		fmt.Println("Task C")
+		return nil, nil
+	})
