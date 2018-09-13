@@ -6,14 +6,14 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var WaitWorkflow = workflow.NewDefault("WaitWorkflow",
+var WaitWorkflow = workflow.New("WaitWorkflow",
 	func() (interface{}, error) {
 
 		tasks.TaskA.NewInstance().Execute()
 
-		task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
+		task.Wait().Seconds(5).Execute()
 
-		tasks.TaskD.NewInstance().Execute()
+		tasks.TaskB.NewInstance().Execute()
 
 		return nil, nil
 	})

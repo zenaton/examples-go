@@ -9,7 +9,10 @@ import (
 
 var TaskD = task.NewDefault("TaskD",
 	func() (interface{}, error) {
-		time.Sleep(1 * time.Second)
-		fmt.Println("Task D")
-		return nil, nil
+
+		fmt.Println("Task D starts")
+		time.Sleep(9 * time.Second)
+		fmt.Println("Task D ends")
+
+		return 3, nil
 	})

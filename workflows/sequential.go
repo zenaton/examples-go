@@ -5,9 +5,17 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var SequentialWorkflow = workflow.NewDefault("SequentialWorkflow",
+var SequentialWorkflow = workflow.New("SequentialWorkflow",
 	func() (interface{}, error) {
-		tasks.TaskA.NewInstance().Execute()
-		tasks.TaskB.NewInstance().Execute()
+
+		var a int
+		tasks.TaskA.NewInstance().Execute(&a)
+
+		if a == 0 {
+			tasks.TaskB.NewInstance().Execute()
+		} else {
+			tasks.TaskC.NewInstance().Execute()
+		}
+
 		return nil, nil
 	})

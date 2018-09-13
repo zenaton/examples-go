@@ -3,17 +3,20 @@ package main
 import (
 	"time"
 
+	"github.com/twinj/uuid"
 	_ "github.com/zenaton/examples-go/client" // initialize zenaton client with credentials
 	"github.com/zenaton/examples-go/workflows"
 )
 
 func main() {
 
-	workflows.EventWorkflow.NewInstance().Dispatch()
+	id := uuid.NewV4().String()
 
-	time.Sleep(2 * time.Second)
+	workflows.EventWorkflow.NewInstance(&workflows.Event{
+		IDstr: id,
+	}).Dispatch()
 
-	workflows.SequentialWorkflow.WhereID("MyId").Find()
+	time.Sleep(1 * time.Second)
 
-	workflows.EventWorkflow.WhereID("MyId").Send("MyEvent", nil)
+	workflows.EventWorkflow.WhereID(id).Send("MyEvent", nil)
 }

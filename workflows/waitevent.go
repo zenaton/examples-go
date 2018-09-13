@@ -6,11 +6,15 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var WaitEventWorkflow = workflow.New("WaitEventWorkflow", &WaitEvent{})
+var WaitEventWorkflow = workflow.NewCustom("WaitEventWorkflow", &WaitEvent{})
 
-type WaitEvent struct{}
+type WaitEvent struct {
+	IDstr string
+}
 
 func (w *WaitEvent) Handle() (interface{}, error) {
+
+	// Waits until the event or at most 4 seconds
 	event, err := task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
 
 	if err != nil {
@@ -18,13 +22,15 @@ func (w *WaitEvent) Handle() (interface{}, error) {
 	}
 
 	if event.Arrived() {
+		// if event has been triggered within 4 seconds
 		tasks.TaskA.NewInstance().Execute()
 	} else {
+		//else
 		tasks.TaskB.NewInstance().Execute()
 	}
 	return nil, nil
 }
 
 func (w *WaitEvent) ID() string {
-	return "MyId"
+	return w.IDstr
 }

@@ -4,7 +4,11 @@ This repository contains examples of workflows built with Zenaton. These example
 ## Installation
 Download this repo
 ```
-git clone https://github.com/zenaton/examples-go.git; cd examples-go
+go get github.com/zenaton/examples-go
+```
+cd into directory
+```
+cd $GOPATH/src/github.com/zenaton/examples-go
 ```
 then add an .env file
 ```

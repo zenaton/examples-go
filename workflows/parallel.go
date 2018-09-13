@@ -6,19 +6,23 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var ParallelWorkflow = workflow.NewDefault("ParallelWorkflow",
+var ParallelWorkflow = workflow.New("ParallelWorkflow",
 	func() (interface{}, error) {
 
+		var a int
+		var b int
+
 		//tasks A and B run in parallel
-		err := task.Parallel{
+		task.Parallel{
 			tasks.TaskA.NewInstance(),
 			tasks.TaskB.NewInstance(),
-		}.Execute()
+		}.Execute(&a, &b)
 
-		if err != nil {
-			panic(err)
+		if a > b {
+			tasks.TaskC.NewInstance().Execute()
+		} else {
+			tasks.TaskD.NewInstance().Execute()
 		}
 
-		tasks.TaskC.NewInstance().Execute()
 		return nil, nil
 	})

@@ -8,8 +8,12 @@ import (
 )
 
 var TaskB = task.NewDefault("TaskB",
+
 	func() (interface{}, error) {
-		time.Sleep(3 * time.Second)
-		fmt.Println("Task B")
-		return nil, nil
+
+		fmt.Println("Task B starts")
+		time.Sleep(5 * time.Second)
+		fmt.Println("Task B ends")
+
+		return 1, nil
 	})

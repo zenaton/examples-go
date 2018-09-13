@@ -6,13 +6,13 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var VersionWorkflow = workflow.Version("VersionWorkflow", []*workflow.WorkflowType{
+var VersionWorkflow = workflow.Version("VersionWorkflow", []*workflow.Definition{
 	V0Workflow,
 	V1Workflow,
 	V2Workflow,
 })
 
-var V0Workflow = workflow.NewDefault("V0", func() (interface{}, error) {
+var V0Workflow = workflow.New("V0", func() (interface{}, error) {
 	task.Parallel{
 		tasks.TaskA.NewInstance(),
 		tasks.TaskB.NewInstance(),
@@ -20,7 +20,7 @@ var V0Workflow = workflow.NewDefault("V0", func() (interface{}, error) {
 	return nil, nil
 })
 
-var V1Workflow = workflow.NewDefault("V1", func() (interface{}, error) {
+var V1Workflow = workflow.New("V1", func() (interface{}, error) {
 	task.Parallel{
 		tasks.TaskA.NewInstance(),
 		tasks.TaskB.NewInstance(),
@@ -29,7 +29,7 @@ var V1Workflow = workflow.NewDefault("V1", func() (interface{}, error) {
 	return nil, nil
 })
 
-var V2Workflow = workflow.NewDefault("V2", func() (interface{}, error) {
+var V2Workflow = workflow.New("V2", func() (interface{}, error) {
 	task.Parallel{
 		tasks.TaskA.NewInstance(),
 		tasks.TaskB.NewInstance(),
