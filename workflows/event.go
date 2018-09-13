@@ -5,27 +5,33 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var EventWorkflow = workflow.NewCustom("EventWorkflow", &Event{})
+//set the default state to true
+var EventWorkflow = workflow.NewCustom("EventWorkflow", &Event{State: true})
 
+// All fields in this struct must be exported, as they must be serialized.
 type Event struct {
 	IDstr string
+	State bool
 }
 
 func (e *Event) Handle() (interface{}, error) {
 	tasks.TaskA.NewInstance().Execute()
-	tasks.TaskB.NewInstance().Execute()
+
+	if e.State {
+		tasks.TaskB.NewInstance().Execute()
+	} else {
+		tasks.TaskC.NewInstance().Execute()
+	}
+
 	return nil, nil
 }
 
 func (e *Event) OnEvent(eventName string, eventData interface{}) {
 	if eventName == "MyEvent" {
-		tasks.TaskC.NewInstance().Execute()
+		e.State = false
 	}
 }
 
 func (e *Event) ID() string {
-	if e.IDstr == "" {
-		return "MyId"
-	}
 	return e.IDstr
 }

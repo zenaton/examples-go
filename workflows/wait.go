@@ -11,9 +11,9 @@ var WaitWorkflow = workflow.New("WaitWorkflow",
 
 		tasks.TaskA.NewInstance().Execute()
 
-		task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
+		task.Wait().Seconds(5).Execute()
 
-		tasks.TaskD.NewInstance().Execute()
+		tasks.TaskB.NewInstance().Execute()
 
 		return nil, nil
 	})
