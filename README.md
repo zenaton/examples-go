@@ -21,10 +21,6 @@ Then, you need to install a Zenaton worker
 ```
 curl https://install.zenaton.com | sh
 ```
-and start it:
-```
-zenaton start
-```
 and make it listen to your configuration:
 ```
 zenaton listen --env=client/.env --boot=boot/boot.go
