@@ -6,7 +6,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var ParallelWorkflow = workflow.NewDefault("ParallelWorkflow",
+var ParallelWorkflow = workflow.New("ParallelWorkflow",
 	func() (interface{}, error) {
 
 		//tasks A and B run in parallel

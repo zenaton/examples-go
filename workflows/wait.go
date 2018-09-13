@@ -6,7 +6,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var WaitWorkflow = workflow.NewDefault("WaitWorkflow",
+var WaitWorkflow = workflow.New("WaitWorkflow",
 	func() (interface{}, error) {
 
 		tasks.TaskA.NewInstance().Execute()

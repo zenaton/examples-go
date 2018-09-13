@@ -6,7 +6,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var WaitEventWorkflow = workflow.New("WaitEventWorkflow", &WaitEvent{})
+var WaitEventWorkflow = workflow.NewCustom("WaitEventWorkflow", &WaitEvent{})
 
 type WaitEvent struct{}
 

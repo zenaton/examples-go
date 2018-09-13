@@ -5,7 +5,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var MaxProcessingWorkflow = workflow.NewDefault("MaxProcessingWorkflow",
+var MaxProcessingWorkflow = workflow.New("MaxProcessingWorkflow",
 	func() (interface{}, error) {
 
 		//tasks A and B run in parallel

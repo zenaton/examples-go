@@ -7,7 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var RecursiveWorkflow = workflow.New("RecursiveWorkflow", &Recursive{})
+var RecursiveWorkflow = workflow.NewCustom("RecursiveWorkflow", &Recursive{})
 
 type Recursive struct {
 	ID  int

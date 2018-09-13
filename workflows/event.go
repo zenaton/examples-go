@@ -5,7 +5,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/workflow"
 )
 
-var EventWorkflow = workflow.New("EventWorkflow", &Event{})
+var EventWorkflow = workflow.NewCustom("EventWorkflow", &Event{})
 
 type Event struct {
 	IDstr string
