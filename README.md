@@ -4,7 +4,7 @@ This repository contains examples of workflows built with Zenaton. These example
 ## Installation
 Download this repo
 ```
-go get github.com/zenaton/examples-go
+go get github.com/zenaton/examples-go/...
 ```
 cd into directory
 ```
