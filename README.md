@@ -15,7 +15,7 @@ then add an .env file
 cp client/.example.env client/.env
 ```
 and populate it with your application id and api token found [here](https://zenaton.com/app/api).
-
+git pu
 ### Running Locally
 Then, you need to install a Zenaton worker
 ```

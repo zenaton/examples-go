@@ -8,6 +8,3 @@
 zenaton.out
 zenaton.log
 zenaton.err
-
-# go binary
-zenaton-go
