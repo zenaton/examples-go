@@ -12,9 +12,9 @@ go get github.com/zenaton/zenaton-go/...
 ```
 cd into example directory
 ```
-cd $GOPATH/src/github.com/zenaton/examples-go
+cd $(go env GOPATH)/src/github.com/zenaton/examples-go
 ```
-then add an .env file
+then add a]n .env file
 ```
 cp client/.example.env client/.env
 ```
