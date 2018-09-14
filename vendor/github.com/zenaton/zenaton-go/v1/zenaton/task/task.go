@@ -7,6 +7,7 @@ import (
 
 	"fmt"
 
+	"errors"
 	"github.com/zenaton/zenaton-go/v1/zenaton/engine"
 	"github.com/zenaton/zenaton-go/v1/zenaton/interfaces"
 	"github.com/zenaton/zenaton-go/v1/zenaton/service/serializer"
@@ -115,58 +116,81 @@ func (t Task) MaxProcessingTime() int64 {
 type taskExecution struct {
 	outputValue     interface{}
 	serializedValue string
+	err             error
 }
 
-func (te *taskExecution) Output(value interface{}) {
+func (te *taskExecution) Output(values ...interface{}) error {
 
-	rv := reflect.ValueOf(value)
-	if rv.Kind() != reflect.Ptr || rv.IsNil() {
-		panic(fmt.Sprint("item at index ", value, " must pass a non-nil pointer to task.Execute"))
+	if len(values) > 1 {
+		panic("must pass a maximum of 1 value to Output")
 	}
 
-	if te.outputValue != nil {
-		outV := reflect.ValueOf(te.outputValue)
+	if te.serializedValue != "" {
+		var value interface{}
+		if len(values) == 1 {
+			value = values[0]
+		}
+		return outputFromSerialized(value, te.serializedValue)
+
+	} else {
+
+		if len(values) == 1 {
+			value := values[0]
+			outputFromInterface(value, te.outputValue)
+		}
+
+		return te.err
+	}
+}
+
+func outputFromInterface(to, from interface{}) {
+	rv := reflect.ValueOf(to)
+	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+		panic(fmt.Sprint("must pass a non-nil pointer to task.Execute"))
+	}
+
+	if from != nil && to != nil {
+		outV := reflect.ValueOf(from)
 		if outV.IsValid() {
 			rv.Elem().Set(outV)
 		}
-	} else {
-		err := serializer.Decode(te.serializedValue, value)
+	}
+}
+
+func outputFromSerialized(to interface{}, from string) error {
+	var combinedOutput map[string]json.RawMessage
+
+	err := serializer.Decode(from, &combinedOutput)
+	if err != nil {
+		panic(err)
+	}
+
+	if to != nil {
+		err = serializer.Decode(string(combinedOutput["output"]), to)
 		if err != nil {
 			panic(err)
 		}
 	}
+
+	if combinedOutput["error"] != nil {
+		return errors.New(string(combinedOutput["error"]))
+	}
+	return nil
 }
 
 func (t *Task) Execute() *taskExecution {
 
-	//if len(returnValues) > 1 {
-	//	panic("must only pass one value to Execute")
-	//}
-
-	//var output interface{}
-	//if len(returnValues) == 1 {
-	//	returnValue := returnValues[0]
-	//	rv := reflect.ValueOf(returnValue)
-	//	if rv.Kind() != reflect.Ptr || rv.IsNil() {
-	//		panic("must pass a non-nil pointer to task.Execute")
-	//	}
-	//
-	//	output = returnValue
-	//} else {
-	//	var o interface{}
-	//	output = &o
-	//}
-
-	outputValues, serializedValue := engine.NewEngine().Execute([]interfaces.Job{t})
+	outputValues, serializedValues, errs := engine.NewEngine().Execute([]interfaces.Job{t})
 
 	var ex taskExecution
 
 	if outputValues != nil {
 		ex.outputValue = outputValues[0]
+		ex.err = errs[0]
 	}
 
-	if serializedValue != nil {
-		ex.serializedValue = serializedValue[0]
+	if serializedValues != nil {
+		ex.serializedValue = serializedValues[0]
 	}
 
 	return &ex
@@ -180,39 +204,44 @@ func (t *Task) Dispatch() {
 type parallelExecution struct {
 	outputValues     []interface{}
 	serializedValues []string
+	errors           []error
 }
 
-func (pe *parallelExecution) Output(values ...interface{}) {
-
-	//todo: test this
-	if len(values) == 0 {
-		return
-	}
+func (pe *parallelExecution) Output(values ...interface{}) []error {
 
 	if len(values) != len(pe.outputValues) && len(values) != len(pe.serializedValues) {
 		panic(fmt.Sprint("task: number of parallel tasks and return value pointers do not match"))
 	}
 
-	for i := range values {
-		v := values[i]
-		rv := reflect.ValueOf(v)
-		if rv.Kind() != reflect.Ptr || rv.IsNil() {
-			panic(fmt.Sprint("item at index ", i, " must pass a non-nil pointer to task.Execute"))
-		}
-
-		if pe.outputValues != nil {
-			outV := reflect.ValueOf(pe.outputValues[i])
-			if outV.IsValid() {
-				rv.Elem().Set(outV)
-			}
-		} else {
-			err := serializer.Decode(pe.serializedValues[i], v)
-			if err != nil {
-				panic(err)
-			}
-		}
-
+	if len(values) == 0 {
+		values = make([]interface{}, len(pe.errors))
 	}
+
+	var errs []error
+
+	if pe.serializedValues != nil {
+		for i := range pe.serializedValues {
+			err := outputFromSerialized(values[i], pe.serializedValues[i])
+			errs = append(errs, err)
+		}
+	} else {
+
+		for i := range pe.outputValues {
+			if values[i] != nil {
+				value := values[0]
+				outputFromInterface(value, pe.outputValues[i])
+			}
+		}
+
+		errs = pe.errors
+	}
+
+	for _, e := range errs {
+		if e != nil {
+			return pe.errors
+		}
+	}
+	return nil
 }
 
 type Parallel []*Task
@@ -249,10 +278,11 @@ func (ts Parallel) Execute() *parallelExecution {
 	for _, task := range ts {
 		jobs = append(jobs, task)
 	}
-	values, serializedValues := e.Execute(jobs)
+	values, serializedValues, errors := e.Execute(jobs)
 
 	return &parallelExecution{
 		outputValues:     values,
 		serializedValues: serializedValues,
+		errors:           errors,
 	}
 }

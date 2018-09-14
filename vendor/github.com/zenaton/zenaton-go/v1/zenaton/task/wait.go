@@ -383,7 +383,7 @@ func (w *WaitTask) GetData() interface{} {
 }
 
 func (w *WaitTask) Execute() *Event {
-	_, serializedEvents := engine.NewEngine().Execute([]interfaces.Job{w})
+	_, serializedEvents, _ := engine.NewEngine().Execute([]interfaces.Job{w})
 
 	if len(serializedEvents) == 0 {
 		return nil
