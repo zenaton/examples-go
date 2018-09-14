@@ -8,6 +8,7 @@ import (
 
 	"github.com/zenaton/zenaton-go/v1/zenaton/engine"
 	"github.com/zenaton/zenaton-go/v1/zenaton/interfaces"
+	"github.com/zenaton/zenaton-go/v1/zenaton/service/serializer"
 )
 
 const (
@@ -26,8 +27,8 @@ type WaitTask struct {
 }
 
 type Event struct {
-	Name string
-	Data interface{}
+	Name string      `json:"event_name"`
+	Data interface{} `json:"event_input"`
 }
 
 type wait struct{}
@@ -381,14 +382,20 @@ func (w *WaitTask) GetData() interface{} {
 	return eventData
 }
 
-func (w *WaitTask) Execute() (*Event, error) {
-	var out interface{}
-	err := engine.NewEngine().Execute([]interfaces.Job{w}, []interface{}{&out})
-	event := Event{
-		Name: w.eventName,
-		Data: out,
+func (w *WaitTask) Execute() *Event {
+	_, serializedEvents := engine.NewEngine().Execute([]interfaces.Job{w})
+
+	if len(serializedEvents) == 0 {
+		return nil
 	}
-	return &event, err
+
+	var event Event
+	err := serializer.Decode(serializedEvents[0], &event)
+	if err != nil {
+		panic(err)
+	}
+
+	return &event
 }
 
 func (e *Event) Arrived() bool {

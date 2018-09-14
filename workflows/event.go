@@ -27,6 +27,7 @@ func (e *Event) Handle() (interface{}, error) {
 }
 
 func (e *Event) OnEvent(eventName string, eventData interface{}) {
+
 	if eventName == "MyEvent" {
 		e.State = false
 	}

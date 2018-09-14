@@ -19,7 +19,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:a048994d7b6dd94ad9c417b33e0bfbf37478c8528ce84733f50596eea3f7a104"
+  digest = "1:7949f0a196810599f0d169216e88d6ed11016e125ce34eac1ed567112a78ce45"
   name = "github.com/zenaton/zenaton-go"
   packages = [
     "v1/zenaton",
@@ -33,7 +33,7 @@
     "v1/zenaton/workflow",
   ]
   pruneopts = "UT"
-  revision = "76376bd8061c2bf0073847b61af4161104a8c7d2"
+  revision = "7030126cceb2db8028f80187b657755e0c6ff1e5"
 
 [solve-meta]
   analyzer-name = "dep"

@@ -7,10 +7,9 @@ import (
 
 	"fmt"
 
-	"strconv"
-
 	"github.com/zenaton/zenaton-go/v1/zenaton/engine"
 	"github.com/zenaton/zenaton-go/v1/zenaton/interfaces"
+	"github.com/zenaton/zenaton-go/v1/zenaton/service/serializer"
 )
 
 type Task struct {
@@ -113,68 +112,147 @@ func (t Task) MaxProcessingTime() int64 {
 	return -1
 }
 
-//todo: as is, this error is always useless, as the workflow execution always just panics anyway at the point of returning an error if there is one
-func (t *Task) Execute(returnValues ...interface{}) error {
-
-	if len(returnValues) > 1 {
-		panic("must only pass one value to Execute")
-	}
-
-	var output interface{}
-	if len(returnValues) == 1 {
-		returnValue := returnValues[0]
-		rv := reflect.ValueOf(returnValue)
-		if rv.Kind() != reflect.Ptr || rv.IsNil() {
-			panic("must pass a non-nil pointer to task.Execute")
-		}
-
-		output = returnValue
-	} else {
-		var o interface{}
-		output = &o
-	}
-	return engine.NewEngine().Execute([]interfaces.Job{t}, []interface{}{output})
+type taskExecution struct {
+	outputValue     interface{}
+	serializedValue string
 }
 
-func (t *Task) Dispatch() error {
+func (te *taskExecution) Output(value interface{}) {
+
+	rv := reflect.ValueOf(value)
+	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+		panic(fmt.Sprint("item at index ", value, " must pass a non-nil pointer to task.Execute"))
+	}
+
+	if te.outputValue != nil {
+		outV := reflect.ValueOf(te.outputValue)
+		if outV.IsValid() {
+			rv.Elem().Set(outV)
+		}
+	} else {
+		err := serializer.Decode(te.serializedValue, value)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func (t *Task) Execute() *taskExecution {
+
+	//if len(returnValues) > 1 {
+	//	panic("must only pass one value to Execute")
+	//}
+
+	//var output interface{}
+	//if len(returnValues) == 1 {
+	//	returnValue := returnValues[0]
+	//	rv := reflect.ValueOf(returnValue)
+	//	if rv.Kind() != reflect.Ptr || rv.IsNil() {
+	//		panic("must pass a non-nil pointer to task.Execute")
+	//	}
+	//
+	//	output = returnValue
+	//} else {
+	//	var o interface{}
+	//	output = &o
+	//}
+
+	outputValues, serializedValue := engine.NewEngine().Execute([]interfaces.Job{t})
+
+	var ex taskExecution
+
+	if outputValues != nil {
+		ex.outputValue = outputValues[0]
+	}
+
+	if serializedValue != nil {
+		ex.serializedValue = serializedValue[0]
+	}
+
+	return &ex
+}
+
+func (t *Task) Dispatch() {
 	e := engine.NewEngine()
-	err := e.Dispatch([]interfaces.Job{t})
-	return err
+	e.Dispatch([]interfaces.Job{t})
+}
+
+type parallelExecution struct {
+	outputValues     []interface{}
+	serializedValues []string
+}
+
+func (pe *parallelExecution) Output(values ...interface{}) {
+
+	//todo: test this
+	if len(values) == 0 {
+		return
+	}
+
+	if len(values) != len(pe.outputValues) && len(values) != len(pe.serializedValues) {
+		panic(fmt.Sprint("task: number of parallel tasks and return value pointers do not match"))
+	}
+
+	for i := range values {
+		v := values[i]
+		rv := reflect.ValueOf(v)
+		if rv.Kind() != reflect.Ptr || rv.IsNil() {
+			panic(fmt.Sprint("item at index ", i, " must pass a non-nil pointer to task.Execute"))
+		}
+
+		if pe.outputValues != nil {
+			outV := reflect.ValueOf(pe.outputValues[i])
+			if outV.IsValid() {
+				rv.Elem().Set(outV)
+			}
+		} else {
+			err := serializer.Decode(pe.serializedValues[i], v)
+			if err != nil {
+				panic(err)
+			}
+		}
+
+	}
 }
 
 type Parallel []*Task
 
-func (ts Parallel) Dispatch() error {
+func (ts Parallel) Dispatch() {
 	e := engine.NewEngine()
 	var jobs []interfaces.Job
 	for _, task := range ts {
 		jobs = append(jobs, task)
 	}
-	return e.Dispatch(jobs)
+	e.Dispatch(jobs)
 }
 
-func (ts Parallel) Execute(returnValues ...interface{}) error {
+func (ts Parallel) Execute() *parallelExecution {
 
-	//todo: test this
-	if len(returnValues) > 0 {
-		if len(returnValues) != len(ts) {
-			panic(fmt.Sprint("task: number of parallel tasks (", strconv.Itoa(len(ts)),
-				") and return value pointers (", strconv.Itoa(len(returnValues)), ") do not match"))
-		}
-		for i, returnValue := range returnValues {
-			rv := reflect.ValueOf(returnValue)
-			if rv.Kind() != reflect.Ptr || rv.IsNil() {
-				panic(fmt.Sprint("item at index ", i, " must pass a non-nil pointer to task.Execute"))
-			}
-		}
-	} else {
-		returnValues = make([]interface{}, len(ts))
-	}
+	////todo: test this
+	//if len(returnValues) > 0 {
+	//	if len(returnValues) != len(ts) {
+	//		panic(fmt.Sprint("task: number of parallel tasks (", strconv.Itoa(len(ts)),
+	//			") and return value pointers (", strconv.Itoa(len(returnValues)), ") do not match"))
+	//	}
+	//	for i, returnValue := range returnValues {
+	//		rv := reflect.ValueOf(returnValue)
+	//		if rv.Kind() != reflect.Ptr || rv.IsNil() {
+	//			panic(fmt.Sprint("item at index ", i, " must pass a non-nil pointer to task.Execute"))
+	//		}
+	//	}
+	//} else {
+	//	returnValues = make([]interface{}, len(ts))
+	//}
 
 	e := engine.NewEngine()
 	var jobs []interfaces.Job
 	for _, task := range ts {
 		jobs = append(jobs, task)
 	}
-	return e.Execute(jobs, returnValues)
+	values, serializedValues := e.Execute(jobs)
+
+	return &parallelExecution{
+		outputValues:     values,
+		serializedValues: serializedValues,
+	}
 }

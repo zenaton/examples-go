@@ -19,44 +19,51 @@ func NewEngine() *Engine {
 }
 
 type Processor interface {
-	Process([]interfaces.Job, bool, ...interface{}) error
+	Process([]interfaces.Job, bool) ([]interface{}, []string, error)
 }
 
-func (e *Engine) Execute(jobs []interfaces.Job, outputs []interface{}) error {
+func (e *Engine) Execute(jobs []interfaces.Job) ([]interface{}, []string) {
 
 	// local execution
 	if e.processor == nil || len(jobs) == 0 {
-
-		var err error
-
+		var outputs []interface{}
 		for _, job := range jobs {
-			_, err = job.Handle()
+			out, err := job.Handle()
 			if err != nil {
-				return err
+				panic(err)
 			}
+			outputs = append(outputs, out)
 		}
 
-		return nil
+		return outputs, nil
 	}
 
-	return e.processor.Process(jobs, true, outputs...)
+	outputValues, serializedOutputs, err := e.processor.Process(jobs, true)
+	if err != nil {
+		panic(err)
+	}
+
+	return outputValues, serializedOutputs
 }
 
-func (e *Engine) Dispatch(jobs []interfaces.Job) error {
+func (e *Engine) Dispatch(jobs []interfaces.Job) {
 
 	if e.processor == nil || len(jobs) == 0 {
 
 		for _, job := range jobs {
 			err := job.Async()
 			if err != nil {
-				return err
+				panic(err)
 			}
 		}
 
-		return nil
+		return
 	}
 
-	return e.processor.Process(jobs, false)
+	_, _, err := e.processor.Process(jobs, false)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (e *Engine) SetProcessor(processor Processor) {

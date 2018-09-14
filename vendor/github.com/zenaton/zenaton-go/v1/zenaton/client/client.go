@@ -140,7 +140,9 @@ func (c *Client) StartWorkflow(flowName, flowCanonical, customID string, data in
 	body[ATTR_DATA] = encodedData
 	body[ATTR_ID] = customID
 
-	fmt.Println("c.getInstanceWorkerUrl(), body", c.getInstanceWorkerUrl(""), body)
+	//fmt.Println("body: ", body)
+	//fmt.Println("c.getInstanceWorkerUrl(): ", c.getInstanceWorkerUrl(""))
+
 	resp, err := service.Post(c.getInstanceWorkerUrl(""), body)
 	if err != nil {
 		if strings.Contains(err.Error(), "connection refused") {
@@ -156,52 +158,6 @@ func (c *Client) StartWorkflow(flowName, flowCanonical, customID string, data in
 	}
 	//todo: this is ugly
 	if strings.Contains(string(respBody), `Your worker does not listen to app`) {
-		panic(string(respBody))
-	}
-	//todo: fix this
-	return nil
-}
-
-//todo: figure out how to handle errors
-func (c *Client) StartWorkflow2(flowName, flowCanonical, customID string, data interface{}) error {
-
-	if len(customID) >= MAX_ID_SIZE {
-		//todo: handle this error better
-		fmt.Println(`Provided id must not exceed ` + strconv.Itoa(MAX_ID_SIZE) + ` bytes`)
-	}
-
-	body := make(map[string]interface{})
-	body[ATTR_PROG] = PROG
-	body[ATTR_CANONICAL] = flowCanonical
-	body[ATTR_NAME] = flowName
-
-	var encodedData string
-	var err error
-
-	if data == nil {
-		encodedData = "{}"
-	} else {
-		encodedData, err = serializer.Encode(data)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	body[ATTR_DATA] = encodedData
-	body[ATTR_ID] = customID
-
-	resp, err := service.Post(c.getInstanceWorkerUrl(""), body)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	respBody, err := ioutil.ReadAll(resp.Body)
-	//todo: panic? or return error?
-	if err != nil {
-		panic(err)
-	}
-	//todo: this is ugly
-	if strings.HasPrefix(string(respBody), `{"error":`) {
 		panic(string(respBody))
 	}
 	//todo: fix this
@@ -237,7 +193,6 @@ func (c *Client) FindWorkflowInstance(workflowName, customId string) (map[string
 
 	resp, err := service.Get(c.getInstanceWebsiteURL(params))
 	if err != nil {
-		fmt.Println("1")
 		return nil, errors.New("unable to find workflow with id: " + customId + " error: " + err.Error())
 	}
 	defer resp.Body.Close()
@@ -248,7 +203,6 @@ func (c *Client) FindWorkflowInstance(workflowName, customId string) (map[string
 	}
 
 	if err != nil {
-		fmt.Println("2")
 		return nil, errors.New("unable to find workflow with id: " + customId + " error: " + err.Error())
 	}
 
@@ -280,7 +234,6 @@ func (c *Client) SendEvent(workflowName, customID, eventName string, eventData i
 	}
 	body[EVENT_INPUT] = encodedData
 
-	fmt.Println("sendEvent body: ", body)
 	service.Post(url, body)
 }
 

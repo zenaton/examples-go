@@ -9,7 +9,7 @@ var SequentialWorkflow = workflow.New("SequentialWorkflow",
 	func() (interface{}, error) {
 
 		var a int
-		tasks.TaskA.NewInstance().Execute(&a)
+		tasks.TaskA.NewInstance().Execute().Output(&a)
 
 		if a == 0 {
 			tasks.TaskB.NewInstance().Execute()

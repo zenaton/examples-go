@@ -16,7 +16,7 @@ var ParallelWorkflow = workflow.New("ParallelWorkflow",
 		task.Parallel{
 			tasks.TaskA.NewInstance(),
 			tasks.TaskB.NewInstance(),
-		}.Execute(&a, &b)
+		}.Execute().Output(&a, &b)
 
 		if a > b {
 			tasks.TaskC.NewInstance().Execute()

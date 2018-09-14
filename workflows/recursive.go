@@ -15,6 +15,7 @@ type Recursive struct {
 }
 
 func (r Recursive) Handle() (interface{}, error) {
+
 	for counter := 0; counter < 2; counter++ {
 		DisplayTask.NewInstance(&Display{ID: counter}).Execute()
 	}
@@ -41,6 +42,7 @@ type Relaunch struct {
 }
 
 func (rt *Relaunch) Handle() (interface{}, error) {
+
 	if rt.R.ID >= rt.R.Max {
 		return nil, nil
 	}

@@ -74,9 +74,9 @@ func (d *Definition) NewInstance(handlers ...interfaces.Handler) *Instance {
 	}
 }
 
-func (i *Instance) Dispatch() error {
+func (i *Instance) Dispatch() {
 	e := engine.NewEngine()
-	return e.Dispatch([]interfaces.Job{i})
+	e.Dispatch([]interfaces.Job{i})
 }
 
 func newInstance(name string, h interfaces.Handler) *Instance {

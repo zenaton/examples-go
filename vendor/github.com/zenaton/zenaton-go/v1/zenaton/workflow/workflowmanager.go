@@ -43,7 +43,7 @@ func (wfm *Store) GetInstance(name, encodedData string) (*Instance, error) {
 		wfDef = def.workflowDef
 	}
 
-	err := serializer.Decode(encodedData, wfDef.defaultInstance)
+	err := serializer.Decode(encodedData, wfDef.defaultInstance.Handler)
 
 	return wfDef.defaultInstance, err
 }

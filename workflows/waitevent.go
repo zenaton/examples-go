@@ -15,13 +15,9 @@ type WaitEvent struct {
 func (w *WaitEvent) Handle() (interface{}, error) {
 
 	// Waits until the event or at most 4 seconds
-	event, err := task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
+	event := task.Wait().ForEvent("MyEvent").Seconds(4).Execute()
 
-	if err != nil {
-		panic(err)
-	}
-
-	if event.Arrived() {
+	if event != nil {
 		// if event has been triggered within 4 seconds
 		tasks.TaskA.NewInstance().Execute()
 	} else {
