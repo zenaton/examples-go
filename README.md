@@ -6,7 +6,11 @@ Download this repo
 ```
 go get github.com/zenaton/examples-go/...
 ```
-cd into directory
+and the client library
+```
+go get github.com/zenaton/zenaton-go/...
+```
+cd into example directory
 ```
 cd $GOPATH/src/github.com/zenaton/examples-go
 ```
