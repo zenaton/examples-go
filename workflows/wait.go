@@ -9,11 +9,11 @@ import (
 var WaitWorkflow = workflow.New("WaitWorkflow",
 	func() (interface{}, error) {
 
-		tasks.TaskA.NewInstance().Execute()
+		tasks.A.New().Execute()
 
 		task.Wait().Seconds(5).Execute()
 
-		tasks.TaskB.NewInstance().Execute()
+		tasks.B.New().Execute()
 
 		return nil, nil
 	})

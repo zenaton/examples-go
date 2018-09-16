@@ -9,7 +9,12 @@ import (
 var WaitEventWorkflow = workflow.NewCustom("WaitEventWorkflow", &WaitEvent{})
 
 type WaitEvent struct {
+	// IDstr instead of ID because we need to have a method named ID
 	IDstr string
+}
+
+func (w *WaitEvent) Init(id string) {
+	w.IDstr = id
 }
 
 func (w *WaitEvent) Handle() (interface{}, error) {
@@ -19,10 +24,10 @@ func (w *WaitEvent) Handle() (interface{}, error) {
 
 	if event != nil {
 		// if event has been triggered within 4 seconds
-		tasks.TaskA.NewInstance().Execute()
+		tasks.A.New().Execute()
 	} else {
 		//else
-		tasks.TaskB.NewInstance().Execute()
+		tasks.B.New().Execute()
 	}
 	return nil, nil
 }

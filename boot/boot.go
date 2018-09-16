@@ -1,6 +1,6 @@
 /*
 the boot file must have two things:
-	1) an ignored import of all of the workflows. all workflows you wish to use must be exported, package level
+	1) an ignored import of all of the workflows. All workflows you wish to use must be exported, package level
 		variables, initialized with workflow.New() or workflow.NewCustom(). See for example in: github.com/zenaton/examples-go/workflows/workflows
 	2) an initialization of the zenaton client.
 */
@@ -11,9 +11,10 @@ import (
 	// (1)
 	// if this project is in your GOPATH, make sure to have imports that start from your GOPATH.
 	// if this project is not in your GOPATH, then you can use relative imports here
+	_ "github.com/zenaton/examples-go/recursive/workflow"
 	_ "github.com/zenaton/examples-go/workflows"
 	// (2)
-	_ "github.com/zenaton/examples-go/client"
+	_ "github.com/zenaton/examples-go"
 	"github.com/zenaton/zenaton-go/v1/zenaton"
 )
 

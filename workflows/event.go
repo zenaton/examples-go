@@ -15,15 +15,19 @@ type Event struct {
 }
 
 func (e *Event) Handle() (interface{}, error) {
-	tasks.TaskA.NewInstance().Execute()
+	tasks.A.New().Execute()
 
 	if e.State {
-		tasks.TaskB.NewInstance().Execute()
+		tasks.B.New().Execute()
 	} else {
-		tasks.TaskC.NewInstance().Execute()
+		tasks.C.New().Execute()
 	}
 
 	return nil, nil
+}
+
+func (e *Event) Init(id string) {
+	e.IDstr = id
 }
 
 func (e *Event) OnEvent(eventName string, eventData interface{}) {

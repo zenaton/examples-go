@@ -7,7 +7,7 @@ import (
 	"github.com/zenaton/zenaton-go/v1/zenaton/task"
 )
 
-var TaskC = task.NewDefault("TaskC",
+var C = task.New("TaskC",
 
 	func() (interface{}, error) {
 

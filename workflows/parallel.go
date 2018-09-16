@@ -14,14 +14,14 @@ var ParallelWorkflow = workflow.New("ParallelWorkflow",
 
 		//tasks A and B run in parallel
 		task.Parallel{
-			tasks.TaskA.NewInstance(),
-			tasks.TaskB.NewInstance(),
+			tasks.A.New(),
+			tasks.B.New(),
 		}.Execute().Output(&a, &b)
 
 		if a > b {
-			tasks.TaskC.NewInstance().Execute()
+			tasks.C.New().Execute()
 		} else {
-			tasks.TaskD.NewInstance().Execute()
+			tasks.D.New().Execute()
 		}
 
 		return nil, nil

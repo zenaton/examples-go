@@ -14,27 +14,27 @@ var VersionWorkflow = workflow.Version("VersionWorkflow", []*workflow.Definition
 
 var V0Workflow = workflow.New("V0", func() (interface{}, error) {
 	task.Parallel{
-		tasks.TaskA.NewInstance(),
-		tasks.TaskB.NewInstance(),
+		tasks.A.New(),
+		tasks.B.New(),
 	}.Execute()
 	return nil, nil
 })
 
 var V1Workflow = workflow.New("V1", func() (interface{}, error) {
 	task.Parallel{
-		tasks.TaskA.NewInstance(),
-		tasks.TaskB.NewInstance(),
-		tasks.TaskC.NewInstance(),
+		tasks.A.New(),
+		tasks.B.New(),
+		tasks.C.New(),
 	}.Execute()
 	return nil, nil
 })
 
 var V2Workflow = workflow.New("V2", func() (interface{}, error) {
 	task.Parallel{
-		tasks.TaskA.NewInstance(),
-		tasks.TaskB.NewInstance(),
-		tasks.TaskC.NewInstance(),
-		tasks.TaskD.NewInstance(),
+		tasks.A.New(),
+		tasks.B.New(),
+		tasks.C.New(),
+		tasks.D.New(),
 	}.Execute()
 	return nil, nil
 })

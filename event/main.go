@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/twinj/uuid"
-	_ "github.com/zenaton/examples-go/client" // initialize zenaton client with credentials
+	_ "github.com/zenaton/examples-go" // initialize zenaton client with credentials
 	"github.com/zenaton/examples-go/workflows"
 )
 
@@ -12,9 +12,7 @@ func main() {
 
 	id := uuid.NewV4().String()
 
-	workflows.EventWorkflow.NewInstance(&workflows.Event{
-		IDstr: id,
-	}).Dispatch()
+	workflows.EventWorkflow.New(id).Dispatch()
 
 	time.Sleep(1 * time.Second)
 
