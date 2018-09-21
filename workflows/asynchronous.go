@@ -9,8 +9,10 @@ var AsynchronousWorkflow = workflow.New("AsynchronousWorkflow",
 	func() (interface{}, error) {
 
 		tasks.A.New().Dispatch()
+		tasks.B.New().Dispatch()
 
-		tasks.B.New().Execute()
+		tasks.C.New().Execute()
+		tasks.D.New().Execute()
 
 		return nil, nil
 	})

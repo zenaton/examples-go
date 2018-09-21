@@ -4,7 +4,7 @@ This repository contains examples of workflows built with Zenaton. These example
 ## Installation
 Download this repo
 ```
-go get github.com/zenaton/examples-go/...
+go get github.com/zenaton/examples-go
 ```
 and the client library
 ```
@@ -14,12 +14,12 @@ cd into example directory
 ```
 cd $(go env GOPATH)/src/github.com/zenaton/examples-go
 ```
-then add a]n .env file
+then add an .env file
 ```
 cp client/.example.env client/.env
 ```
 and populate it with your application id and api token found [here](https://zenaton.com/app/api).
-git pu
+
 ### Running Locally
 Then, you need to install a Zenaton worker
 ```
@@ -27,7 +27,7 @@ curl https://install.zenaton.com | sh
 ```
 and make it listen to your configuration:
 ```
-zenaton listen --env=client/.env --boot=boot/boot.go
+zenaton listen --boot=boot/boot.go
 ```
 Your all set!
 

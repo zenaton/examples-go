@@ -16,5 +16,5 @@ func main() {
 
 	time.Sleep(2 * time.Second)
 
-	workflows.WaitEventWorkflow.WhereID(id).Send("MyEvent", "some data")
+	workflows.WaitEventWorkflow.WhereID(id).Send("MyEvent", nil)
 }
