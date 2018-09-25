@@ -2,7 +2,7 @@
 *.log
 
 # dotenv environment variables file
-*.env*
+*.env
 
 # zenaton files
 zenaton.out
