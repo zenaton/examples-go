@@ -16,7 +16,7 @@ cd $(go env GOPATH)/src/github.com/zenaton/examples-go
 ```
 then add an .env file
 ```
-cp .example.env .env
+cp .env.example .env
 ```
 and populate it with your application id and api token found [here](https://zenaton.com/app/api).
 
