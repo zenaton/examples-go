@@ -18,22 +18,21 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "master"
-  digest = "1:aa181088b05d618e2ff8a6e161f6ec1ed25ff2092c1875e22eb216c33eba3e2e"
+  digest = "1:afdf67ad4377bb8a3a3fb399e047b0c4241cd3c45a89c0e49ca6a5cdd84e73bf"
   name = "github.com/zenaton/zenaton-go"
   packages = [
     "v1/zenaton",
-    "v1/zenaton/client",
-    "v1/zenaton/engine",
     "v1/zenaton/errors",
-    "v1/zenaton/interfaces",
+    "v1/zenaton/internal/client",
+    "v1/zenaton/internal/engine",
     "v1/zenaton/service",
     "v1/zenaton/service/serializer",
     "v1/zenaton/task",
     "v1/zenaton/workflow",
   ]
   pruneopts = "UT"
-  revision = "0c39b1e9edf0b373bcc9b800b1a01ed7d1d2756b"
+  revision = "28250aee7b508c5a55f63d43346745b03439a0bd"
+  version = "v0.2.0"
 
 [solve-meta]
   analyzer-name = "dep"

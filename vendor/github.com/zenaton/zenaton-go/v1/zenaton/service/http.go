@@ -6,10 +6,14 @@ import (
 	"net/http"
 )
 
-//todo: figure out what to do with errors
+var client = http.Client{
+	Transport: &http.Transport{
+		DisableKeepAlives: true,
+	},
+}
 
 func Get(url string) (*http.Response, error) {
-	return http.Get(url)
+	return client.Get(url)
 }
 
 func Post(url string, body interface{}) (*http.Response, error) {
@@ -18,7 +22,7 @@ func Post(url string, body interface{}) (*http.Response, error) {
 		return nil, err
 	}
 
-	return http.Post(url, "application/json", bytes.NewBuffer(jsonBody))
+	return client.Post(url, "application/json", bytes.NewBuffer(jsonBody))
 }
 
 func Put(url string, body interface{}) (*http.Response, error) {
@@ -33,5 +37,5 @@ func Put(url string, body interface{}) (*http.Response, error) {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	return http.DefaultClient.Do(req)
+	return client.Do(req)
 }

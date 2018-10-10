@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"runtime"
 	"strconv"
@@ -20,32 +21,32 @@ import (
 )
 
 const (
-	ZENATON_API_URL     = "https://zenaton.com/api/v1"
-	ZENATON_WORKER_URL  = "http://localhost"
-	DEFAULT_WORKER_PORT = 4001
-	WORKER_API_VERSION  = "v_newton"
+	zenatonAPIurl     = "https://zenaton.com/api/v1"
+	zenatonWorkerURL  = "http://localhost"
+	defaultWorkerPort = 4001
+	workerAPIversion  = "v_newton"
 
-	MAX_ID_SIZE = 256
+	maxIDsize = 256
 
 	APP_ENV   = "app_env"
 	APP_ID    = "app_id"
 	API_TOKEN = "api_token"
 
-	ATTR_ID        = "custom_id"
-	ATTR_NAME      = "name"
-	ATTR_CANONICAL = "canonical_name"
-	ATTR_DATA      = "data"
-	ATTR_PROG      = "programming_language"
-	ATTR_MODE      = "mode"
+	attrID        = "custom_id"
+	attrName      = "name"
+	attrCanonical = "canonical_name"
+	attrData      = "data"
+	attrProg      = "programming_language"
+	attrMode      = "mode"
 
-	PROG = "Go"
+	prog = "Go"
 
-	EVENT_INPUT = "event_input"
-	EVENT_NAME  = "event_name"
+	eventInput = "event_input"
+	eventName  = "event_name"
 
-	WORKFLOW_KILL  = "kill"
-	WORKFLOW_PAUSE = "pause"
-	WORKFLOW_RUN   = "run"
+	workflowKill  = "kill"
+	workflowPause = "pause"
+	workflowRun   = "run"
 )
 
 var (
@@ -67,7 +68,10 @@ func InitClient(appIDx, apiTokenx, appEnvx string) {
 	}
 	directory := path.Dir(filename)
 	zenatonDirectory := directory[:len(directory)-len("/client")]
-	os.Setenv("ZENATON_LIBRARY_PATH", zenatonDirectory)
+	err := os.Setenv("ZENATON_LIBRARY_PATH", zenatonDirectory)
+	if err != nil {
+		panic(err)
+	}
 
 }
 
@@ -84,24 +88,24 @@ func NewClient(worker bool) *Client {
 }
 
 func (c *Client) GetWorkerUrl(resources string, params string) string {
-	workerURL := os.Getenv("ZENATON_WORKER_URL")
+	workerURL := os.Getenv("zenatonWorkerURL")
 	if workerURL == "" {
-		workerURL = ZENATON_WORKER_URL
+		workerURL = zenatonWorkerURL
 	}
 
 	workerPort := os.Getenv("ZENATON_WORKER_PORT")
 	if workerPort == "" {
-		workerPort = strconv.Itoa(DEFAULT_WORKER_PORT)
+		workerPort = strconv.Itoa(defaultWorkerPort)
 	}
 
-	url := workerURL + ":" + workerPort + "/api/" + WORKER_API_VERSION +
+	url := workerURL + ":" + workerPort + "/api/" + workerAPIversion +
 		"/" + resources + "?"
 
 	return c.addAppEnv(url, params)
 }
 
 func (c *Client) getWebsiteURL(resources, params string) string {
-	apiURL := ZENATON_API_URL
+	apiURL := zenatonAPIurl
 	if os.Getenv("ZENATON_API_URL") != "" {
 		apiURL = os.Getenv("ZENATON_API_URL")
 	}
@@ -109,21 +113,19 @@ func (c *Client) getWebsiteURL(resources, params string) string {
 	return c.addAppEnv(url, params)
 }
 
-//todo: figure out how to handle errors
-func (c *Client) StartWorkflow(flowName, flowCanonical, customID string, data interface{}) error {
+func (c *Client) StartWorkflow(flowName, flowCanonical, customID string, data interface{}) {
 
-	if len(customID) >= MAX_ID_SIZE {
-		//todo: handle this error better
-		fmt.Println(`Provided id must not exceed ` + strconv.Itoa(MAX_ID_SIZE) + ` bytes`)
+	if len(customID) >= maxIDsize {
+		panic(`Provided id must not exceed ` + strconv.Itoa(maxIDsize) + ` bytes`)
 	}
 
 	body := make(map[string]interface{})
-	body[ATTR_PROG] = PROG
-	body[ATTR_CANONICAL] = flowCanonical
+	body[attrProg] = prog
+	body[attrCanonical] = flowCanonical
 	if flowCanonical == "" {
-		body[ATTR_CANONICAL] = nil
+		body[attrCanonical] = nil
 	}
-	body[ATTR_NAME] = flowName
+	body[attrName] = flowName
 
 	var encodedData string
 	var err error
@@ -137,11 +139,8 @@ func (c *Client) StartWorkflow(flowName, flowCanonical, customID string, data in
 		}
 	}
 
-	body[ATTR_DATA] = encodedData
-	body[ATTR_ID] = customID
-
-	//fmt.Println("body: ", body)
-	//fmt.Println("c.getInstanceWorkerUrl(): ", c.getInstanceWorkerUrl(""))
+	body[attrData] = encodedData
+	body[attrID] = customID
 
 	resp, err := service.Post(c.getInstanceWorkerUrl(""), body)
 	if err != nil {
@@ -152,20 +151,17 @@ func (c *Client) StartWorkflow(flowName, flowCanonical, customID string, data in
 
 	defer resp.Body.Close()
 	respBody, err := ioutil.ReadAll(resp.Body)
-	//todo: panic? or return error?
+
 	if err != nil {
 		panic(err)
 	}
-	//todo: this is ugly
 	if strings.Contains(string(respBody), `Your worker does not listen to app`) {
 		panic(string(respBody))
 	}
-	//todo: fix this
-	return nil
 }
 
 func (c *Client) KillWorkflow(workflowName, customId string) error {
-	err := c.updateInstance(workflowName, customId, WORKFLOW_KILL)
+	err := c.updateInstance(workflowName, customId, workflowKill)
 	if err != nil {
 		return errors.New(fmt.Sprint("unable to kill workflow: ", workflowName, " error: ", err.Error()))
 	}
@@ -173,7 +169,7 @@ func (c *Client) KillWorkflow(workflowName, customId string) error {
 }
 
 func (c *Client) PauseWorkflow(workflowName, customId string) error {
-	err := c.updateInstance(workflowName, customId, WORKFLOW_PAUSE)
+	err := c.updateInstance(workflowName, customId, workflowPause)
 	if err != nil {
 		return errors.New(fmt.Sprint("unable to pause workflow: ", workflowName, " error: ", err.Error()))
 	}
@@ -181,49 +177,50 @@ func (c *Client) PauseWorkflow(workflowName, customId string) error {
 }
 
 func (c *Client) ResumeWorkflow(workflowName, customId string) error {
-	err := c.updateInstance(workflowName, customId, WORKFLOW_RUN)
+	err := c.updateInstance(workflowName, customId, workflowRun)
 	if err != nil {
 		return errors.New(fmt.Sprint("unable to resume workflow: ", workflowName, " error: ", err.Error()))
 	}
 	return nil
 }
 
-func (c *Client) FindWorkflowInstance(workflowName, customId string) (map[string]map[string]string, error) {
-	params := ATTR_ID + "=" + customId + "&" + ATTR_NAME + "=" + workflowName + "&" + ATTR_PROG + "=" + PROG
+func (c *Client) FindWorkflowInstance(workflowName, customId string) (map[string]map[string]string, bool, error) {
+	params := attrID + "=" + customId + "&" + attrName + "=" + workflowName + "&" + attrProg + "=" + prog
 
 	resp, err := service.Get(c.getInstanceWebsiteURL(params))
 	if err != nil {
-		return nil, errors.New("unable to find workflow with id: " + customId + " error: " + err.Error())
+		return nil, false, errors.New("1unable to find workflow with id: " + customId + " error: " + err.Error())
 	}
 	defer resp.Body.Close()
 	respBody, err := ioutil.ReadAll(resp.Body)
 
-	if strings.HasPrefix(string(respBody), `{"error":`) {
-		return nil, errors.New(string(respBody))
+	if resp.StatusCode == http.StatusNotFound {
+		return nil, false, nil
 	}
 
 	if err != nil {
-		return nil, errors.New("unable to find workflow with id: " + customId + " error: " + err.Error())
+		return nil, false, errors.New("2unable to find workflow with id: " + customId + " error: " + err.Error())
 	}
 
 	var respMap map[string]map[string]string
+
 	err = json.Unmarshal(respBody, &respMap)
 	if err != nil {
-		//fmt.Println("3", string(respBody))
-		return nil, errors.New("unable to find workflow with id: " + customId + " error: " + err.Error())
+		fmt.Println("respBody: ", resp.StatusCode)
+		return nil, false, errors.New("3unable to find workflow with id: " + customId + " error: " + err.Error())
 	}
 
-	return respMap, nil
+	return respMap, true, nil
 }
 
 // todo: should this return something?
-func (c *Client) SendEvent(workflowName, customID, eventName string, eventData interface{}) {
+func (c *Client) SendEvent(workflowName, customID, name string, eventData interface{}) {
 	var url = c.getSendEventURL()
 	body := make(map[string]interface{})
-	body[ATTR_PROG] = PROG
-	body[ATTR_NAME] = workflowName
-	body[ATTR_ID] = customID
-	body[EVENT_NAME] = eventName
+	body[attrProg] = prog
+	body[attrName] = workflowName
+	body[attrID] = customID
+	body[eventName] = name
 	encodedData, err := serializer.Encode(eventData)
 	if err != nil {
 		panic(err)
@@ -232,17 +229,17 @@ func (c *Client) SendEvent(workflowName, customID, eventName string, eventData i
 	if encodedData == "null" {
 		encodedData = "{}"
 	}
-	body[EVENT_INPUT] = encodedData
+	body[eventInput] = encodedData
 
 	service.Post(url, body)
 }
 
 func (c *Client) updateInstance(workflowName, customId, mode string) error {
-	var params = ATTR_ID + "=" + customId
+	var params = attrID + "=" + customId
 	var body = make(map[string]interface{})
-	body[ATTR_PROG] = PROG
-	body[ATTR_NAME] = workflowName
-	body[ATTR_MODE] = mode
+	body[attrProg] = prog
+	body[attrName] = workflowName
+	body[attrMode] = mode
 	_, err := service.Put(c.getInstanceWorkerUrl(params), body)
 	return err
 }

@@ -485,22 +485,17 @@ func (s *serializer) decodeMap(id int, keys interface{}, values interface{}, v r
 }
 
 func (s *serializer) decodeElement(rv reflect.Value, value interface{}) {
-	//fmt.Println("decodeElement value: ", value)
 
 	potentialID, ok := value.(string)
-	//fmt.Println("str: ", value)
 	if ok {
 		id, isStoreID := s.storeID(potentialID)
 		if isStoreID {
 			encoded := s.encoded[id]
-			//fmt.Println("decodeElement id, encoded", id, encoded)
 			s.decodeFromStore(id, encoded, rv)
-			//fmt.Printf("returned %+v, %+v\n", rv.Interface(), rv.Kind())
 			return
 		}
 	}
 
-	//fmt.Println("rv kind:::::::::::::::: ", rv, rv.Kind())
 	rv = indirect(rv)
 	switch rv.Kind() {
 	case reflect.Bool:

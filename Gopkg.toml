@@ -34,8 +34,8 @@
   version = "1.0.0"
 
 [[constraint]]
-  branch = "master"
   name = "github.com/zenaton/zenaton-go"
+  version = "0.2.0"
 
 [prune]
   go-tests = true
