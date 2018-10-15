@@ -135,12 +135,28 @@ go run wait/main.go
 go run waitevent/main.go
 ```
 
+## Example 7: Error Workflow
+[This example](https://github.com/zenaton/examples-go/tree/master/workflows/error.go) showcases
+- how to recover from a faulty task
+ <p align="center">
+    <img
+        src="https://raw.githubusercontent.com/zenaton/resources/master/examples/images/png/flow_error.png"
+        alt="Error Workflow Diagram"
+        width="400px"
+    />
+</p>
+
+```
+go run error/main.go
+```
+
+
 ## Example 7: Recursive Workflow
 [This example](https://github.com/zenaton/examples-go/tree/master/recursive/recursive.go) showcases
 - how launching events or workflows directly from orchestrated tasks allows you to schedule recurring workflows
 
 ```
-go recursive/main.go
+go run recursive/main.go
 ```
 
 ## Example 8: Workflow Versions
@@ -148,5 +164,5 @@ go recursive/main.go
 - how to update your workflow implementation, even while previous versions are still running
 
 ```
-go version/main.go
+go run version/main.go
 ```
