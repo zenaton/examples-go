@@ -5,6 +5,6 @@ import (
 	"github.com/zenaton/examples-go/workflows"
 )
 
-func main(){
+func main() {
 	workflows.ErrorWorkflow.New().Dispatch()
 }

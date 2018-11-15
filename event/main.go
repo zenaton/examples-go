@@ -14,7 +14,7 @@ func main() {
 
 	workflows.EventWorkflow.New(id).Dispatch()
 
-	time.Sleep(4 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	workflows.EventWorkflow.WhereID(id).Send("MyEvent", nil)
 }
