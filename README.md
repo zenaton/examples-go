@@ -1,3 +1,5 @@
+> ⚠️ This repository is abandoned.
+
 # Zenaton examples for Go
 This repository contains examples of workflows built with Zenaton. These examples illustrates how Zenaton orchestrates tasks that are executed on different workers.
 
